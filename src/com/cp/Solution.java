@@ -1,5 +1,7 @@
 package com.cp;
 
+import com.sun.source.tree.Tree;
+
 import java.util.*;
 
 class TreeNode {
@@ -42,6 +44,127 @@ class TreeNode {
 //}
 
 public class Solution {
+
+    private TreeNode node;
+    public TreeNode invertTree(TreeNode root) {
+        if(root==null) return root;
+        TreeNode left = invertTree(root.left);
+        TreeNode right = invertTree(root.right);
+        TreeNode tempNode = new TreeNode();
+        tempNode = left;
+        left = right;
+        right = tempNode;
+        return root;
+    }
+    public String licenseKeyFormatting(String s, int k) {
+        String string = s.replaceAll("-","").toUpperCase();
+        int loc = string.length();
+        StringBuilder str = new StringBuilder();
+        while(loc>-1) {
+            if(loc-k >= 0) {
+                str.append(new StringBuilder(string.substring(0, loc+1)).reverse());
+            } else {
+                str.append(string, loc-k, loc+1);
+            }
+            str.append("-");
+            loc -=k;
+        }
+        return removeTrailing(str.toString(), '-');
+    }
+
+    private String removeTrailing(String str, char c) {
+        if(str.length() == 0 || str.charAt(str.length() - 1)!=c) return str;
+        return removeTrailing(str.substring(0, str.length()-1), '-');
+    }
+
+    public int oddEvenJumps(int[] arr) {
+        if(arr.length < 2) {
+            return  0;
+        }
+        int result = 0;
+        Map<Integer, Integer> nextSmallestLocation = new HashMap<>();
+        Map<Integer, Integer> nextLargestLocation = new HashMap<>();
+        nextSmallestLocation.put(arr.length - 1, -1);
+        nextLargestLocation.put(arr.length - 1, -1);
+
+        for(int i = arr.length - 2; i>=0; i--) {
+            if(arr[i] <= arr[i+1]) {
+                if (nextLargestLocation.get(i + 1) == -1) {
+                    nextLargestLocation.put(i, i + 1);
+                } else {
+                    nextLargestLocation.put(i,
+                            arr[nextLargestLocation.get(i + 1)] <= arr[i + 1] ? nextLargestLocation.get(i + 1) : i + 1);
+                }
+                if(nextSmallestLocation.get(i+1) == -1) {
+                    nextSmallestLocation.put(i, -1);
+                } else {
+                    nextSmallestLocation.put(i, arr[nextSmallestLocation.get(i+1)] <= arr[i] ? nextSmallestLocation.get(i+1) : -1);
+                }
+            } else {
+                if (nextSmallestLocation.get(i + 1) == -1) {
+                    nextSmallestLocation.put(i, i + 1);
+                } else {
+                    nextSmallestLocation.put(i,
+                            arr[nextSmallestLocation.get(i + 1)] <= arr[i + 1] ? nextSmallestLocation.get(i + 1) : i + 1);
+                }
+                if(nextLargestLocation.get(i+1) == -1) {
+                    nextLargestLocation.put(i, -1);
+                } else {
+                    nextLargestLocation.put(i, arr[nextLargestLocation.get(i + 1)] > arr[i] ? nextLargestLocation.get(i + 1) : -1);
+                }
+            }
+        }
+
+        for( int i=0; i<arr.length;i++) {
+            int cur_location = i;
+            int jump_num = 1;
+            while(true) {
+                if(jump_num%2 == 1) {
+                    if(nextLargestLocation.get(cur_location) == -1) {
+                        break;
+                    } else {
+                        cur_location = nextLargestLocation.get(cur_location);
+                    }
+                } else {
+                    if(nextSmallestLocation.get(cur_location) == -1) {
+                        break;
+                    } else {
+                        cur_location = nextSmallestLocation.get(cur_location);
+                    }
+                }
+                jump_num++;
+            }
+            if(cur_location == arr.length-1) {
+                result++;
+            }
+        }
+
+
+        return result;
+    }
+
+    public int numUniqueEmails(String[] emails) {
+        Map<String, Set<String>> addresses = new HashMap<>();
+        int total_addresses = 0;
+
+        for (String email : emails) {
+            String name, domain;
+            int atIndex = email.indexOf("@");
+            //name = emails[i].split("@")[0];
+            name = email.substring(0, atIndex);
+            domain = email.substring(atIndex + 1);
+            name = name.split("\\+")[0];
+            name = name.replaceAll("\\.", "");
+            if (addresses.containsKey(domain) && !addresses.get(domain).contains(name)) {
+                addresses.get(domain).add(name);
+                total_addresses++;
+            } else if (!addresses.containsKey(domain)) {
+                addresses.put(domain, new HashSet<>(Collections.singletonList(name)));
+                total_addresses++;
+            }
+        }
+        return total_addresses;
+    }
 
     int[][] memoization;
 

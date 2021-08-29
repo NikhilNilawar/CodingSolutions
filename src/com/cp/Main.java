@@ -13,26 +13,9 @@ public class Main {
     public static void main(String[] args) {
 
         Solution s = new Solution();
+        String str = "5F3Z-2e-9-w";
 
-        //int repeat = s.repetitionsRequired("abc", "cbad");
-        //int[] input = { 81, 2, 3, 4, 5, 6, 7, 1 };
-//        Object[] array = s.getUnsortedList(input);
-//
-//        for (Object o : array) {
-//            System.out.println(o);
-//        }
-        String first = "abcd";
-        String second = "ikugi";
-
-        int lcs = s.longestCommonSubString(first, second);
-        System.out.println(lcs);
-    }
-
-    static class Task implements Runnable {
-        @Override
-        public void run() {
-            long id  = Thread.currentThread().getId();
-            System.out.println("This is within thread : " + id);
-        }
+        String result = s.licenseKeyFormatting(str, 4);
+        System.out.println(result);
     }
 }
